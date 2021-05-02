@@ -59,6 +59,7 @@ namespace Vyachka.Chat.Server
             ClientData data = (ClientData)objData;
             Console.WriteLine($"{data.Name} connected");
             byte[] inputData = new byte[256];
+
             int bytesRead;
             do
             {
