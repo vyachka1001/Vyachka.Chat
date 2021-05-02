@@ -52,8 +52,8 @@ namespace ClientWPF
             Thread typing = new Thread(CommunicateWithServer);
             typing.Start();
 
-            /*ChatSocket.Shutdown(SocketShutdown.Both);
-            ChatSocket.Close();*/
+            /*ChatSocket.Shutdown(SocketShutdown.Both);*/
+            //ChatSocket.Close();
         }
 
         private void CommunicateWithServer()
