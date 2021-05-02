@@ -65,7 +65,8 @@ namespace Vyachka.Chat.Server
             {
                 bytesRead = data.ClientSocket.Receive(inputData);
                 string text = Encoding.UTF8.GetString(inputData, 0, bytesRead);
-                Console.WriteLine($"{DateTime.Now.ToShortTimeString()} {data.Name}: {text}");
+                text = DateTime.Now.ToShortTimeString() + " " + data.Name + ": " + text;
+                Console.WriteLine(text);
                 foreach(Socket client in clients)
                 {
                     inputData = Encoding.UTF8.GetBytes(text);

@@ -67,12 +67,8 @@ namespace ClientWPF
                     chatSocket.Send(outputData);
 
                     int bytesRead;
-                    do
-                    {
-                        bytesRead = chatSocket.Receive(outputData);
-                        message = Encoding.UTF8.GetString(outputData, 0, bytesRead);
-                        message = DateTime.Now.ToShortTimeString() + " " + UserName + ": " + message;
-                    } while (bytesRead > 0);
+                    bytesRead = chatSocket.Receive(outputData);
+                    message = Encoding.UTF8.GetString(outputData, 0, bytesRead);
                }
             }
             while (true);
