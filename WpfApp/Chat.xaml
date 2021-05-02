@@ -1,0 +1,15 @@
+﻿<Window x:Class="ClientWPF.Chat"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ClientWPF"
+        mc:Ignorable="d"
+        Title="Chat" Height="665" Width="580" Background="Gray">
+    <Grid>
+        <TextBlock x:Name="Chat_textBlock" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Height="528" Width="456" FontSize="16" Background="White"/>
+        <Button x:Name="Send_btn" Content="Send" HorizontalAlignment="Left" Margin="486,580,0,0" VerticalAlignment="Top" Width="66" FontSize="16" Height="28" Click="Send_btn_Click"/>
+        <TextBox x:Name="Message_textBox" HorizontalAlignment="Left" Margin="0,568,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="456" Height="53" FontSize="16" VerticalScrollBarVisibility="Visible" TextChanged="Message_textBox_TextChanged"/>
+        <Label Content="Type here:" HorizontalAlignment="Left" Margin="10,537,0,0" VerticalAlignment="Top" FontSize="16"/>
+    </Grid>
+</Window>
