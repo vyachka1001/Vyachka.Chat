@@ -50,10 +50,27 @@ namespace ClientWPF
             chatSocket.Send(byteName);
 
             Thread typing = new Thread(CommunicateWithServer);
-            typing.Start();
+            Thread receiving = new Thread(RecevingFromServer);
 
-            /*ChatSocket.Shutdown(SocketShutdown.Both);*/
-            //ChatSocket.Close();
+            typing.Start();
+            receiving.Start();
+
+            /*chatSocket.Shutdown(SocketShutdown.Both);
+            chatSocket.Close();*/
+        }
+
+        private void RecevingFromServer(object obj)
+        {
+            while (true)
+            {
+                byte[] data = new byte[256];
+                int bytesRead = chatSocket.Receive(data);
+                int length = BitConverter.ToInt32(data, 0);
+
+                data = new byte[length];
+                bytesRead = chatSocket.Receive(data);
+                message = Encoding.UTF8.GetString(data, 0, bytesRead);
+            }
         }
 
         private void CommunicateWithServer()
@@ -65,10 +82,6 @@ namespace ClientWPF
                     byte[] outputData = Encoding.UTF8.GetBytes(message);
                     isSendBtnSet = false;
                     chatSocket.Send(outputData);
-
-                    int bytesRead;
-                    bytesRead = chatSocket.Receive(outputData);
-                    message = Encoding.UTF8.GetString(outputData, 0, bytesRead);
                }
             }
             while (true);

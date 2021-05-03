@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -9,7 +10,7 @@ namespace Vyachka.Chat.Server
 {
     public class Server
     {
-        private static ArrayList clients = new ArrayList();
+        private static List<Socket> clients = new List<Socket>();
 
         static void Main(string[] args)
         {
@@ -69,6 +70,8 @@ namespace Vyachka.Chat.Server
                 Console.WriteLine(text);
                 foreach(Socket client in clients)
                 {
+                    inputData = Encoding.UTF8.GetBytes(text.Length.ToString());
+                    client.Send(inputData);
                     inputData = Encoding.UTF8.GetBytes(text);
                     client.Send(inputData);
                 }
@@ -88,10 +91,6 @@ namespace Vyachka.Chat.Server
                 {
                     case "port":
                         isValid = int.TryParse(value, out _);
-                        break;
-
-                    case "IP":
-                        isValid = IPAddress.TryParse(value, out _);
                         break;
                 }
 
