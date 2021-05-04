@@ -32,7 +32,6 @@ namespace ClientWPF
         private void Send_btn_Click(object sender, RoutedEventArgs e)
         {
             isSendBtnSet = true;
-            Thread.Sleep(1000);
             Chat_textBlock.Text += "\n" + message;
             Message_textBox.Text = "";
         }
@@ -89,10 +88,7 @@ namespace ClientWPF
 
         private void Message_textBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-            if (Message_textBox.Text != "")
-            {
-                message = Message_textBox.Text;
-            }
+            message = Message_textBox.Text;
         }
     }
 }

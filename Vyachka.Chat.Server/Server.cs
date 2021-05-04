@@ -10,7 +10,7 @@ namespace Vyachka.Chat.Server
 {
     public class Server
     {
-        private static List<Socket> clients = new List<Socket>();
+        private static List<ClientData> clients = new List<ClientData>();
 
         static void Main(string[] args)
         {
@@ -39,18 +39,18 @@ namespace Vyachka.Chat.Server
                 Socket clientSocket = socket.Accept();
                 if (clientSocket != null)
                 {
-                    clients.Add(clientSocket);
                     byte[] byteName = new byte[256];
                     int bytes = clientSocket.Receive(byteName);
                     string name = Encoding.UTF8.GetString(byteName, 0, bytes);
-                    var data = new ClientData(clientSocket, name);
+                    ClientData data = new ClientData(clientSocket, name);
+                    clients.Add(data);
 
                     Thread thread = new Thread(CommunicateWithClient);
-                    thread.Start(data);
+                    thread.Start(data);/*
                     thread.Join();
 
                     clientSocket.Shutdown(SocketShutdown.Both);
-                    clientSocket.Close();
+                    clientSocket.Close();*/
                 }
             }
         }
@@ -68,12 +68,12 @@ namespace Vyachka.Chat.Server
                 string text = Encoding.UTF8.GetString(inputData, 0, bytesRead);
                 text = DateTime.Now.ToShortTimeString() + " " + data.Name + ": " + text;
                 Console.WriteLine(text);
-                foreach(Socket client in clients)
+                foreach(ClientData client in clients)
                 {
                     inputData = Encoding.UTF8.GetBytes(text.Length.ToString());
-                    client.Send(inputData);
+                    client.ClientSocket.Send(inputData);
                     inputData = Encoding.UTF8.GetBytes(text);
-                    client.Send(inputData);
+                    client.ClientSocket.Send(inputData);
                 }
             }
             while (bytesRead > 0);
