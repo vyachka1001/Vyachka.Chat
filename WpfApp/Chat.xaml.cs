@@ -51,15 +51,18 @@ namespace ClientWPF
             {
                 MessageBox.Show($"It is impossible to connect to the server. {ex.Message}", "Connection error",
                                 MessageBoxButton.OK, MessageBoxImage.Error);
+                Reconnect_btn.IsEnabled = true;
                 return;
             }
             catch (ObjectDisposedException ex)
             {
                 MessageBox.Show($"It is impossible to connect to the server. {ex.Message}", "Connection error",
                                 MessageBoxButton.OK, MessageBoxImage.Error);
+                Reconnect_btn.IsEnabled = true;
                 return;
             }
 
+            Reconnect_btn.IsEnabled = false;
             handlerProc = new Thread(ReceivingFromServer);
             handlerProc.Start();
 
@@ -82,6 +85,12 @@ namespace ClientWPF
             if (!isClosing)
             {
                 MessageBox.Show("Server was disconnected.", "Server error", MessageBoxButton.OK, MessageBoxImage.Error);
+                Dispatcher.Invoke(() =>
+                {
+                    Reconnect_btn.IsEnabled = true;
+                    Chat_textBlock.Text += "----------------------Server is down------------------------------\n";
+                }
+                );
             }
         }
 

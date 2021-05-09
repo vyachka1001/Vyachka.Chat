@@ -12,6 +12,7 @@ namespace Vyachka.Chat.Server
     public class Server
     {
         private static List<ClientData> clients = new List<ClientData>();
+        private const int MAX_USERS_AMOUNT = 100; 
 
         static void Main(string[] args)
         {
@@ -36,17 +37,20 @@ namespace Vyachka.Chat.Server
 
             while (true)
             {
-                Socket clientSocket = socket.Accept();
-                if (clientSocket != null)
+                if (clients.Count < MAX_USERS_AMOUNT)
                 {
-                    string name = Processor.Receive(clientSocket);
-                    ClientData data = new ClientData(clientSocket, name);
-                    Processor.Send($"Hi {name}!\n", clientSocket);
-                    Console.WriteLine($"{data.Name} connected");
-                    clients.Add(data);
+                    Socket clientSocket = socket.Accept();
+                    if (clientSocket != null)
+                    {
+                        string name = Processor.Receive(clientSocket);
+                        ClientData data = new ClientData(clientSocket, name);
+                        Processor.Send($"Hi {name}!\n", clientSocket);
+                        Console.WriteLine($"{data.Name} connected");
+                        clients.Add(data);
 
-                    Thread thread = new Thread(CommunicateWithClient);
-                    thread.Start(data);
+                        Thread thread = new Thread(CommunicateWithClient);
+                        thread.Start(data);
+                    }
                 }
             }
         }
