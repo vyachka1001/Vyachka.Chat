@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MsgProcessor;
+using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -15,10 +16,9 @@ namespace ClientWPF
         public string IP { get; set; }
         public string Port { get; set; }
         public string UserName { get; set; }
-
+        private Thread handlerProc;
         private Socket chatSocket;
-        private bool isSendBtnSet = false;
-        string message = "";
+        private bool isClosing = false;
 
         public Chat(string ip, string port, string name)
         {
@@ -31,9 +31,9 @@ namespace ClientWPF
 
         private void Send_btn_Click(object sender, RoutedEventArgs e)
         {
-            isSendBtnSet = true;
-            Chat_textBlock.Text += "\n" + message;
-            Message_textBox.Text = "";
+            string toSend = $"[{DateTime.Now.ToShortTimeString()}] {UserName}: {Message_textBox.Text}\n";
+            Processor.Send(toSend, chatSocket);
+            Message_textBox.Clear();
         }
 
         private void CreateClientSocket()
@@ -43,52 +43,66 @@ namespace ClientWPF
 
             IPEndPoint ipPoint = new IPEndPoint(ipAddress, port);
             chatSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            try
+            {
+                chatSocket.Connect(ipPoint);
+            }
+            catch(SocketException ex)
+            {
+                MessageBox.Show($"It is impossible to connect to the server. {ex.Message}", "Connection error",
+                                MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            catch (ObjectDisposedException ex)
+            {
+                MessageBox.Show($"It is impossible to connect to the server. {ex.Message}", "Connection error",
+                                MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
-            chatSocket.Connect(ipPoint);
-            byte[] byteName = Encoding.UTF8.GetBytes(UserName);
-            chatSocket.Send(byteName);
+            handlerProc = new Thread(ReceivingFromServer);
+            handlerProc.Start();
 
-            Thread typing = new Thread(CommunicateWithServer);
-            Thread receiving = new Thread(RecevingFromServer);
-
-            typing.Start();
-            receiving.Start();
-
-            /*chatSocket.Shutdown(SocketShutdown.Both);
-            chatSocket.Close();*/
+            Processor.Send(UserName, chatSocket);
         }
 
-        private void RecevingFromServer(object obj)
+        private void ReceivingFromServer(object obj)
         {
-            while (true)
+            string data;
+            while ((data = Processor.Receive(chatSocket)) != null)
             {
-                byte[] data = new byte[256];
-                int bytesRead = chatSocket.Receive(data);
-                int length = BitConverter.ToInt32(data, 0);
-
-                data = new byte[length];
-                bytesRead = chatSocket.Receive(data);
-                message = Encoding.UTF8.GetString(data, 0, bytesRead);
+                Dispatcher.Invoke(() =>
+                {
+                    Chat_textBlock.Text += data;
+                    Chat_textBlock.Focus();
+                    Chat_textBlock.CaretIndex = Chat_textBlock.Text.Length;
+                }
+                );
+            }
+            if (!isClosing)
+            {
+                MessageBox.Show("Server was disconnected.", "Server error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
-        private void CommunicateWithServer()
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            do
-            {
-               if (isSendBtnSet && message != "")
-               {
-                    byte[] outputData = Encoding.UTF8.GetBytes(message);
-                    isSendBtnSet = false;
-                    chatSocket.Send(outputData);
-               }
-            }
-            while (true);
+            isClosing = true;
+            chatSocket.Shutdown(SocketShutdown.Send);
+            handlerProc.Join();
         }
 
-        private void Message_textBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        private void Reconnect_btn_Click(object sender, RoutedEventArgs e)
         {
-            message = Message_textBox.Text;
+            CreateClientSocket();
+        }
+
+        private void Message_textBox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Enter)
+            {
+                Send_btn_Click(sender, e);
+            }
         }
     }
 }

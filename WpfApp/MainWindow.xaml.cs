@@ -29,6 +29,7 @@ namespace ClientWPF
             {
                 Chat window = new Chat(IPAddress_textBox.Text, Port_textBox.Text, Name_textBox.Text);
                 window.Show();
+                Close();
             }
         }
 
@@ -82,6 +83,14 @@ namespace ClientWPF
                 );
                 textBox.SelectionStart = e.Changes.First().Offset + 1;
                 textBox.SelectionLength = 0;
+            }
+        }
+
+        private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Enter)
+            {
+                Register_btn_Click(sender, e);
             }
         }
     }

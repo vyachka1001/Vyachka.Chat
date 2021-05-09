@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MsgProcessor;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net;
@@ -35,48 +36,39 @@ namespace Vyachka.Chat.Server
 
             while (true)
             {
-                Console.WriteLine("Server is waiting for connections...");
                 Socket clientSocket = socket.Accept();
                 if (clientSocket != null)
                 {
-                    byte[] byteName = new byte[256];
-                    int bytes = clientSocket.Receive(byteName);
-                    string name = Encoding.UTF8.GetString(byteName, 0, bytes);
+                    string name = Processor.Receive(clientSocket);
                     ClientData data = new ClientData(clientSocket, name);
+                    Processor.Send($"Hi {name}!\n", clientSocket);
+                    Console.WriteLine($"{data.Name} connected");
                     clients.Add(data);
 
                     Thread thread = new Thread(CommunicateWithClient);
-                    thread.Start(data);/*
-                    thread.Join();
-
-                    clientSocket.Shutdown(SocketShutdown.Both);
-                    clientSocket.Close();*/
+                    thread.Start(data);
                 }
             }
         }
 
         static void CommunicateWithClient(object objData)
         {
-            ClientData data = (ClientData)objData;
-            Console.WriteLine($"{data.Name} connected");
-            byte[] inputData = new byte[256];
+            ClientData clientData = (ClientData) objData;
 
-            int bytesRead;
-            do
+            string input;
+            while ((input = Processor.Receive(clientData.ClientSocket)) != null)
             {
-                bytesRead = data.ClientSocket.Receive(inputData);
-                string text = Encoding.UTF8.GetString(inputData, 0, bytesRead);
-                text = DateTime.Now.ToShortTimeString() + " " + data.Name + ": " + text;
-                Console.WriteLine(text);
+                Console.Write(input);
                 foreach(ClientData client in clients)
                 {
-                    inputData = Encoding.UTF8.GetBytes(text.Length.ToString());
-                    client.ClientSocket.Send(inputData);
-                    inputData = Encoding.UTF8.GetBytes(text);
-                    client.ClientSocket.Send(inputData);
+                    Processor.Send(input, client.ClientSocket);
                 }
             }
-            while (bytesRead > 0);
+            
+            clientData.ClientSocket.Shutdown(SocketShutdown.Both);
+            clientData.ClientSocket.Close();
+            clients.Remove(clientData);
+            Console.WriteLine($"{clientData.Name} disconnected.");
         }
 
         private static string GetData(string type)

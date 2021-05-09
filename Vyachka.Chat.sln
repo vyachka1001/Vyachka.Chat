@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vyachka.Chat.Server", "Vyac
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClientWPF", "WpfApp\ClientWPF.csproj", "{F60F6939-E5A7-4237-AC23-E90B7632C3B7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MsgProcessor", "MsgProcessor\MsgProcessor.csproj", "{608B5657-2EF2-431C-AA56-ED4EA3326325}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{F60F6939-E5A7-4237-AC23-E90B7632C3B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F60F6939-E5A7-4237-AC23-E90B7632C3B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F60F6939-E5A7-4237-AC23-E90B7632C3B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{608B5657-2EF2-431C-AA56-ED4EA3326325}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{608B5657-2EF2-431C-AA56-ED4EA3326325}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{608B5657-2EF2-431C-AA56-ED4EA3326325}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{608B5657-2EF2-431C-AA56-ED4EA3326325}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

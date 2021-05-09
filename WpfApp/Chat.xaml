@@ -5,11 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ClientWPF"
         mc:Ignorable="d"
-        Title="Chat" Height="665" Width="580" Background="Gray">
+        Title="Chat" Height="689" Width="580" Background="Gray" Closing="Window_Closing">
     <Grid>
-        <TextBlock x:Name="Chat_textBlock" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Height="528" Width="456" FontSize="16" Background="White"/>
-        <Button x:Name="Send_btn" Content="Send" HorizontalAlignment="Left" Margin="486,580,0,0" VerticalAlignment="Top" Width="66" FontSize="16" Height="28" Click="Send_btn_Click"/>
-        <TextBox x:Name="Message_textBox" HorizontalAlignment="Left" Margin="0,568,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="456" Height="53" FontSize="16" VerticalScrollBarVisibility="Visible" TextChanged="Message_textBox_TextChanged"/>
-        <Label Content="Type here:" HorizontalAlignment="Left" Margin="10,537,0,0" VerticalAlignment="Top" FontSize="16"/>
+        <TextBox x:Name="Chat_textBlock" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Height="518" Width="486" FontSize="16" Background="White" IsReadOnly="True" Margin="33,10,0,0"/>
+        <Button x:Name="Send_btn" Content="Send" HorizontalAlignment="Center" Margin="0,620,0,0" VerticalAlignment="Top" Width="66" FontSize="16" Height="25" Click="Send_btn_Click"/>
+        <TextBox x:Name="Message_textBox" HorizontalAlignment="Left" Margin="33,553,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="486" Height="53" FontSize="16" VerticalScrollBarVisibility="Visible" KeyDown="Message_textBox_KeyDown"/>
+        <Label Content="Type here:" HorizontalAlignment="Center" Margin="0,522,0,0" VerticalAlignment="Top" FontSize="16"/>
+        <Button x:Name="Reconnect_btn" Content="Reconnect" HorizontalAlignment="Left" Margin="65,620,0,0" VerticalAlignment="Top" Height="25" Width="80" FontSize="16" Click="Reconnect_btn_Click"/>
     </Grid>
 </Window>
